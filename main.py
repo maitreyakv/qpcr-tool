@@ -14,6 +14,30 @@ from backend import load_data, compute
 from frontend import make_barplot
 
 
+class PlotViewer(ttk.Notebook):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.grid(padx=5, pady=5)
+
+    def clear(self):
+        for tab in self.tabs():
+            self.forget(tab)
+
+    def add_plot(self, fig, tab_title):
+        from matplotlib.backends.backend_tkagg import (
+            FigureCanvasTkAgg, NavigationToolbar2Tk
+        )
+
+        plot_frame = ttk.Frame()
+        canvas = FigureCanvasTkAgg(fig, plot_frame)
+        canvas.draw()
+        canvas.get_tk_widget().grid()  #.pack(fill=tk.BOTH, expand=True)
+        toolbar = NavigationToolbar2Tk(canvas, plot_frame, pack_toolbar=False)
+        toolbar.update()
+        toolbar.grid()  #.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.add(plot_frame, text=tab_title)
+
 
 class MainFrame(tk.Frame):
     def __init__(self, parent):
@@ -38,6 +62,9 @@ class MainFrame(tk.Frame):
         )
         self.selected_file_label.grid(row=0, column=1, padx=5, pady=5)
 
+        self.plots = PlotViewer(self)
+
+
     # TODO: Rename and refactor
     def func(self):
         filename = fd.askopenfilename(
@@ -60,18 +87,12 @@ class MainFrame(tk.Frame):
             return
 
         df = compute(df)
-        
-        from matplotlib.backends.backend_tkagg import (
-            FigureCanvasTkAgg, NavigationToolbar2Tk
-        )
+        print(df)
 
-        fig = make_barplot(df, 'GRIA2')
-        canvas = FigureCanvasTkAgg(fig, self)
-        canvas.draw()
-        canvas.get_tk_widget().grid()  #.pack(fill=tk.BOTH, expand=True)
-        toolbar = NavigationToolbar2Tk(canvas, self, pack_toolbar=False)
-        toolbar.update()
-        toolbar.grid()  #.pack(side=tk.BOTTOM, fill=tk.X)
+        self.plots.clear()
+        for p in df.target.unique():
+            fig = make_barplot(df, p)
+            self.plots.add_plot(fig, p)
         
 
 
@@ -89,7 +110,7 @@ if __name__ == '__main__':
     logging.basicConfig(
         #filename=log_filename,
         #encoding='utf-8',
-        level=logging.DEBUG
+        level=logging.INFO
     )
 
     logging.info('Starting application')
