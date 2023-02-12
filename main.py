@@ -18,25 +18,25 @@ from frontend import make_barplot
 class MainFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
-        self.grid()
+        self.grid(padx=5, pady=5)
 
         file_select_frame = tk.LabelFrame(
             self,
             text='Select File'
         )
-        file_select_frame.grid()
+        file_select_frame.grid(padx=5, pady=5)
 
         load_button = ttk.Button(
             file_select_frame,
             text='Open file',
             command=self.func
         )
-        load_button.grid(row=0, column=0)
+        load_button.grid(row=0, column=0, padx=5, pady=5)
 
         self.selected_file_label = ttk.Label(
             file_select_frame
         )
-        self.selected_file_label.grid(row=0, column=1)
+        self.selected_file_label.grid(row=0, column=1, padx=5, pady=5)
 
     # TODO: Rename and refactor
     def func(self):
@@ -61,11 +61,17 @@ class MainFrame(tk.Frame):
 
         df = compute(df)
         
-        for primer in df.target.unique():
-            make_barplot(df, primer)
+        from matplotlib.backends.backend_tkagg import (
+            FigureCanvasTkAgg, NavigationToolbar2Tk
+        )
 
-        import matplotlib.pyplot as plt
-        plt.show()
+        fig = make_barplot(df, 'GRIA2')
+        canvas = FigureCanvasTkAgg(fig, self)
+        canvas.draw()
+        canvas.get_tk_widget().grid()  #.pack(fill=tk.BOTH, expand=True)
+        toolbar = NavigationToolbar2Tk(canvas, self, pack_toolbar=False)
+        toolbar.update()
+        toolbar.grid()  #.pack(side=tk.BOTTOM, fill=tk.X)
         
 
 
@@ -73,7 +79,7 @@ class App(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         self.grid()
-        root.geometry("800x600")
+        root.geometry("1000x600")
         MainFrame(self)
 
 
