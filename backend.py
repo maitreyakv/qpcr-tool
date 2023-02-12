@@ -45,14 +45,16 @@ def load_data(filename):
 
 # TODO: Refactor this
 def compute(df):
+    control_primer = df.target.mode().iloc[0]
+
     df['cell_line'] = df['sample'].str.rpartition(' ')[0]
     df['time'] = df['sample'].str.rpartition(' ')[2]
     assert df.time.str.fullmatch(r'^D\d+$').all()
 
     def cq_control_column(dfn):
         assert len(dfn) == 2
-        idx_control = dfn.query('target == "primer control"').index[0]
-        assert(dfn.loc[idx_control].target == 'primer control')
+        idx_control = dfn.query('target == @control_primer').index[0]
+        assert(dfn.loc[idx_control].target == control_primer)
         dfn['cq_control'] = dfn.loc[idx_control].cq
         return dfn
 
