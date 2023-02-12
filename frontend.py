@@ -22,5 +22,10 @@ def make_barplot(df, primer):
         #palette='cubehelix',
         ax=ax
     )
+    
     ax.set_title(primer)
+    ax.set_xlabel('Cell Line')
+    ax.set_ylabel('Relative Quantification')
+    ax.legend(title='Time')
+
     return fig

@@ -67,6 +67,8 @@ class MainFrame(tk.Frame):
 
     # TODO: Rename and refactor
     def func(self):
+        self.plots.clear()
+
         filename = fd.askopenfilename(
             title='Open qPCR data file',
             initialdir='.',
@@ -76,12 +78,12 @@ class MainFrame(tk.Frame):
         self.selected_file_label['text'] = filename
         
         if not filename:
-            logging.debug('No file was selected')
+            logging.info('No file was selected')
             return
-        logging.debug(f'File "{filename}" was selected')
+        logging.info(f'File "{filename}" was selected')
 
         df = load_data(filename)
-        logging.debug('Loaded data from file')
+        logging.info('Loaded data from file')
 
         if df is None:
             return
@@ -89,7 +91,6 @@ class MainFrame(tk.Frame):
         df = compute(df)
         print(df)
 
-        self.plots.clear()
         for p in df.target.unique():
             fig = make_barplot(df, p)
             self.plots.add_plot(fig, p)
@@ -100,7 +101,7 @@ class App(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         self.grid()
-        root.geometry("1000x600")
+        root.geometry("1000x800")
         MainFrame(self)
 
 
