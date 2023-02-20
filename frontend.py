@@ -19,6 +19,7 @@ def make_barplot(df, primer):
         x='cell_line',
         y='rq',
         hue='time',
+        errorbar='sd',
         #palette='cubehelix',
         ax=ax
     )
@@ -27,5 +28,6 @@ def make_barplot(df, primer):
     ax.set_xlabel('Cell Line')
     ax.set_ylabel('Relative Quantification')
     ax.legend(title='Time')
+    fig.tight_layout()
 
     return fig

@@ -16,16 +16,16 @@ COLUMN_TYPES = {
 NA_VALUES = ['Undetermined']
 
 
-# TODO: Refactor this
-primer_avg = {
-    'primer 1': 19,
-    'primer 2': 14,
-    'primer 3': 21,
-    'primer 4': 16,
-    'primer 5': 8,
-    'primer 6': 5,
-    'primer control': None
-}
+# # TODO: Refactor this
+# primer_avg = {
+#     'primer 1': 19,
+#     'primer 2': 14,
+#     'primer 3': 21,
+#     'primer 4': 16,
+#     'primer 5': 8,
+#     'primer 6': 5,
+#     'primer control': None
+# }
 
 def load_data(filename):
     df = pd.read_excel(
@@ -43,8 +43,9 @@ def load_data(filename):
 
     return df
 
+
 # TODO: Refactor this
-def compute(df):
+def compute(df, primer_avg):
     control_primer = df.target.mode().iloc[0]
 
     df['cell_line'] = df['sample'].str.rpartition(' ')[0]
