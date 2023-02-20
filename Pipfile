@@ -9,6 +9,7 @@ seaborn = "*"
 openpyxl = "*"
 numpy = "*"
 matplotlib = "*"
+tabulate = "*"
 
 [dev-packages]
 flake8 = "*"
